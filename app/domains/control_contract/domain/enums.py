@@ -1,0 +1,98 @@
+from enum import Enum
+
+
+class DeviceRunStatus(str, Enum):
+    DISCONNECTED = "DISCONNECTED"
+    IDLE = "IDLE"
+    RUNNING = "RUNNING"
+    STOPPED = "STOPPED"
+    EMERGENCY_STOPPED = "EMERGENCY_STOPPED"
+    ERROR = "ERROR"
+
+
+class RunStatus(str, Enum):
+    DISCONNECTED = "DISCONNECTED"
+    IDLE = "IDLE"
+    RUNNING = "RUNNING"
+    STOPPED = "STOPPED"
+    EMERGENCY_STOPPED = "EMERGENCY_STOPPED"
+    ERROR = "ERROR"
+
+
+class DeviceDirection(str, Enum):
+    FORWARD = "FORWARD"
+    REVERSE = "REVERSE"
+    NONE = "NONE"
+
+
+class Direction(str, Enum):
+    FORWARD = "FORWARD"
+    REVERSE = "REVERSE"
+    NONE = "NONE"
+
+
+class BoardType(str, Enum):
+    CONTAINER_CONVEYOR = "CONTAINER_CONVEYOR"
+    STRAIGHT_CONVEYOR = "STRAIGHT_CONVEYOR"
+
+
+class BasicCommand(str, Enum):
+    START = "START"
+    SET_SPEED = "SET_SPEED"
+    FORWARD = "FORWARD"
+    REVERSE = "REVERSE"
+    STOP = "STOP"
+    EMERGENCY_STOP = "EMERGENCY_STOP"
+    SET_COLOR = "SET_COLOR"
+    RETURN_HOME = "RETURN_HOME"
+    BOX_ACTION = "BOX_ACTION"
+    RESET = "RESET"
+    STATUS_SYNC = "STATUS_SYNC"
+    RELEASE_EMERGENCY_STOP = "RELEASE_EMERGENCY_STOP"
+
+
+class ConveyorCommandType(str, Enum):
+    START = "START"
+    SET_SPEED = "SET_SPEED"
+    FORWARD = "FORWARD"
+    REVERSE = "REVERSE"
+    STOP = "STOP"
+    EMERGENCY_STOP = "EMERGENCY_STOP"
+    SORT_COLOR = "SORT_COLOR"
+    SET_COLOR = "SET_COLOR"
+    RETURN_HOME = "RETURN_HOME"
+    BOX_ACTION = "BOX_ACTION"
+    RESET = "RESET"
+    STATUS_SYNC = "STATUS_SYNC"
+    RELEASE_EMERGENCY_STOP = "RELEASE_EMERGENCY_STOP"
+
+
+class CommandStatus(str, Enum):
+    REQUESTED = "REQUESTED"
+    SENT = "SENT"
+    ACKED = "ACKED"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    TIMEOUT = "TIMEOUT"
+
+
+class SafetyStatus(str, Enum):
+    NORMAL = "NORMAL"
+    EMERGENCY_STOPPED = "EMERGENCY_STOPPED"
+    FAULTED = "FAULTED"
+
+
+class BoardMessageType(str, Enum):
+    ACK = "ACK"
+    RESULT = "RESULT"
+    STATUS = "STATUS"
+    ERROR = "ERROR"
+    COLOR_DETECTED = "COLOR_DETECTED"
+    HEARTBEAT = "HEARTBEAT"
+
+
+class ColorType(str, Enum):
+    RED = "RED"
+    GREEN = "GREEN"
+    BLUE = "BLUE"
+    UNKNOWN = "UNKNOWN"
