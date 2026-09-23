@@ -1,27 +1,33 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include <ESP8266WebServer.h>
 #include <WebSocketsClient.h>
 
+ESP8266WiFiMulti wifiMulti;
+
 // ======================================================
-// Wi-Fi
+// Wi-Fi Candidates (2개의 후보 중 연결 가능한 AP 자동 접속)
 // ======================================================
 
-const char* WIFI_SSID = "YOUR_WIFI_SSID";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+const char* WIFI_SSID_1 = "kenta";
+const char* WIFI_PASSWORD_1 = "00001111";
+
+const char* WIFI_SSID_2 = "LLim";
+const char* WIFI_PASSWORD_2 = "limche123";
 
 // ======================================================
 // FastAPI
 // ======================================================
 
-const char* SERVER_HOST = "YOUR_PLANNER_SERVER_IP";
+const char* SERVER_HOST = "172.20.10.13";
 const uint16_t SERVER_PORT = 8000;
 
 const char* PROVISIONING_KEY =
-  "YOUR_DEVICE_PROVISIONING_KEY";
+  "planner-device-provisioning-key";
 
 // 반드시 FastAPI .env의 DEVICE_CONTROL_KEY와 동일하게
 const char* CONTROL_KEY =
-  "YOUR_DEVICE_CONTROL_KEY";
+  "planner-device-control-key";
 
 const char* DEVICE_TYPE =
   "AGV";
@@ -1247,13 +1253,11 @@ void setup() {
     "WIFI_CONNECTING"
   );
 
-  WiFi.begin(
-    WIFI_SSID,
-    WIFI_PASSWORD
-  );
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PASSWORD_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PASSWORD_2);
 
   while (
-    WiFi.status() !=
+    wifiMulti.run() !=
     WL_CONNECTED
   ) {
 
@@ -1263,7 +1267,8 @@ void setup() {
   }
 
   debugLog(
-    "WIFI_CONNECTED"
+    "WIFI_CONNECTED: " +
+    WiFi.SSID()
   );
 
   debugLog(
@@ -1334,6 +1339,11 @@ void setup() {
 // ======================================================
 
 void loop() {
+
+  if (wifiMulti.run() != WL_CONNECTED) {
+    delay(10);
+    return;
+  }
 
   // 기존 HTTP
   server.handleClient();
