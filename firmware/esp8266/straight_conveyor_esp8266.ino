@@ -4,7 +4,9 @@
 
 // Replace every YOUR_* value before uploading. Do not commit real keys.
 const char* WIFI_SSID = "kenta";
+// const chat* WIFI_SSID = LLim;
 const char* WIFI_PASSWORD = "00001111";
+// const char* WIFI_PASSWORD = "limche123";
 const char* SERVER_HOST = "172.20.10.13";
 const uint16_t SERVER_PORT = 8000;
 const char* PROVISIONING_KEY = "planner-device-provisioning-key";
