@@ -14,15 +14,18 @@ ESP8266WebServer server(80);
 
 const char* WIFI_SSID_1 = "kenta";
 const char* WIFI_PASSWORD_1 = "00001111";
+const char* SERVER_HOST_1 = "172.20.10.13";
 
 const char* WIFI_SSID_2 = "LLim";
 const char* WIFI_PASSWORD_2 = "limche123";
+const char* SERVER_HOST_2 = "172.21.134.80";
 
 // ======================================================
 // FastAPI
 // ======================================================
 
-const char* SERVER_HOST = "172.20.10.13";
+const char* SERVER_HOST = SERVER_HOST_1;
+String serverHost = SERVER_HOST_1;
 const uint16_t SERVER_PORT = 8000;
 
 const char* PROVISIONING_KEY = "planner-device-provisioning-key";
@@ -270,14 +273,14 @@ void controlEvent(WStype_t type, uint8_t* payload, size_t length) {
 
 void startProvisioning() {
   String path = "/ws/devices/connect?provisioning_key=" + String(PROVISIONING_KEY);
-  provisioningWs.begin(SERVER_HOST, SERVER_PORT, path.c_str());
+  provisioningWs.begin(serverHost.c_str(), SERVER_PORT, path.c_str());
   provisioningWs.onEvent(provisioningEvent);
   provisioningWs.setReconnectInterval(5000);
 }
 
 void startControl() {
   String path = "/ws/boards/" + deviceId + "?control_key=" + String(CONTROL_KEY);
-  controlWs.begin(SERVER_HOST, SERVER_PORT, path.c_str());
+  controlWs.begin(serverHost.c_str(), SERVER_PORT, path.c_str());
   controlWs.onEvent(controlEvent);
   controlWs.setReconnectInterval(5000);
   controlStarted = true;
@@ -878,10 +881,16 @@ void setup() {
   }
   deviceId = makeDeviceId(WiFi.macAddress());
   String localIp = WiFi.localIP().toString();
+  if (WiFi.SSID() == WIFI_SSID_2) {
+    serverHost = SERVER_HOST_2;
+  } else {
+    serverHost = SERVER_HOST_1;
+  }
   Serial.println("WIFI:CONNECTED");
   Serial.println("IP:" + localIp);
   debugLog("WIFI_SSID=" + WiFi.SSID());
   debugLog("DEVICE_ID=" + deviceId);
+  debugLog("SERVER_HOST=" + serverHost);
   
   delay(100);
 

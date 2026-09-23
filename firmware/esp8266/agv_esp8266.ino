@@ -11,15 +11,18 @@ ESP8266WiFiMulti wifiMulti;
 
 const char* WIFI_SSID_1 = "kenta";
 const char* WIFI_PASSWORD_1 = "00001111";
+const char* SERVER_HOST_1 = "172.20.10.13";
 
 const char* WIFI_SSID_2 = "LLim";
 const char* WIFI_PASSWORD_2 = "limche123";
+const char* SERVER_HOST_2 = "172.21.134.80";
 
 // ======================================================
 // FastAPI
 // ======================================================
 
-const char* SERVER_HOST = "172.20.10.13";
+const char* SERVER_HOST = SERVER_HOST_1;
+String serverHost = SERVER_HOST_1;
 const uint16_t SERVER_PORT = 8000;
 
 const char* PROVISIONING_KEY =
@@ -984,7 +987,7 @@ void startProvisioning() {
   );
 
   provisioningWs.begin(
-    SERVER_HOST,
+    serverHost.c_str(),
     SERVER_PORT,
     provisioningPath.c_str()
   );
@@ -1020,7 +1023,7 @@ void startControlWebSocket() {
   controlStarted = true;
 
   controlWs.begin(
-    SERVER_HOST,
+    serverHost.c_str(),
     SERVER_PORT,
     controlPath.c_str()
   );
@@ -1269,6 +1272,17 @@ void setup() {
   debugLog(
     "WIFI_CONNECTED: " +
     WiFi.SSID()
+  );
+
+  if (WiFi.SSID() == WIFI_SSID_2) {
+    serverHost = SERVER_HOST_2;
+  } else {
+    serverHost = SERVER_HOST_1;
+  }
+
+  debugLog(
+    "SERVER_HOST=" +
+    serverHost
   );
 
   debugLog(
