@@ -1,14 +1,31 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include <ESP8266WebServer.h>
 
+ESP8266WiFiMulti wifiMulti;
 ESP8266WebServer server(80);
 
 // ======================================================
-// Wi-Fi
+// Wi-Fi Candidates (2개의 후보 중 연결 가능한 AP 자동 접속)
 // ======================================================
 
-const char* ssid = "LLim";
-const char* password = "limche123";
+const char* WIFI_SSID_1 = "kenta";
+const char* WIFI_PASSWORD_1 = "00001111";
+
+const char* WIFI_SSID_2 = "LLim";
+const char* WIFI_PASSWORD_2 = "limche123";
+
+// ======================================================
+// FastAPI
+// ======================================================
+
+const char* SERVER_HOST = "172.20.10.13";
+const uint16_t SERVER_PORT = 8000;
+
+const char* PROVISIONING_KEY = "planner-device-provisioning-key";
+const char* CONTROL_KEY = "planner-device-control-key";
+const char* DEVICE_TYPE = "CONTAINER_CONVEYOR";
+const char* FIRMWARE_VERSION = "1.0.0";
 
 int currentSpeed = 50;
 String currentDirection = "FORWARD";
@@ -589,17 +606,14 @@ void setup() {
   // ====================================================
 
   WiFi.mode(WIFI_STA);
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PASSWORD_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PASSWORD_2);
 
-  WiFi.begin(
-    ssid,
-    password
-  );
-
-  while (WiFi.status() != WL_CONNECTED) {
+  while (wifiMulti.run() != WL_CONNECTED) {
 
     delay(500);
   }
-  Serial.println("WIFI:CONNECTED");
+  Serial.println("WIFI:CONNECTED: " + WiFi.SSID());
   
   Serial.print("IP:");
   Serial.println(WiFi.localIP());
@@ -636,6 +650,11 @@ void setup() {
 // ======================================================
 
 void loop() {
+
+  if (wifiMulti.run() != WL_CONNECTED) {
+    delay(10);
+    return;
+  }
 
   server.handleClient();
 }

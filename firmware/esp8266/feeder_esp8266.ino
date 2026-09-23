@@ -1,14 +1,31 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include <ESP8266WebServer.h>
 
+ESP8266WiFiMulti wifiMulti;
 ESP8266WebServer server(80);
 
 // ======================================================
-// Wi-Fi
+// Wi-Fi Candidates (2개의 후보 중 연결 가능한 AP 자동 접속)
 // ======================================================
 
-const char* ssid = "LLim";
-const char* password = "limche123";
+const char* WIFI_SSID_1 = "kenta";
+const char* WIFI_PASSWORD_1 = "00001111";
+
+const char* WIFI_SSID_2 = "LLim";
+const char* WIFI_PASSWORD_2 = "limche123";
+
+// ======================================================
+// FastAPI
+// ======================================================
+
+const char* SERVER_HOST = "172.20.10.13";
+const uint16_t SERVER_PORT = 8000;
+
+const char* PROVISIONING_KEY = "planner-device-provisioning-key";
+const char* CONTROL_KEY = "planner-device-control-key";
+const char* DEVICE_TYPE = "FEEDER";
+const char* FIRMWARE_VERSION = "1.0.0";
 
 int currentLevel = 50;
 
@@ -394,17 +411,10 @@ void setup() {
 
   // Wi-Fi 연결
   WiFi.mode(WIFI_STA);
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PASSWORD_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PASSWORD_2);
 
-  WiFi.begin(
-    ssid,
-    password
-  );
-
-
-  // 여기 출력도 Arduino 쪽으로 전달될 수 있으므로
-  // 실제 통합 시에는 최소화하는 것이 좋음
-
-  while (WiFi.status() != WL_CONNECTED) {
+  while (wifiMulti.run() != WL_CONNECTED) {
     delay(500);
   }
 
@@ -429,6 +439,11 @@ void setup() {
 // ======================================================
 
 void loop() {
+
+  if (wifiMulti.run() != WL_CONNECTED) {
+    delay(10);
+    return;
+  }
 
   server.handleClient();
 }
